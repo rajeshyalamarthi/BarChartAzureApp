@@ -1,0 +1,18 @@
+{
+ 
+    "xvals": [
+      "YTD",
+      "MAT",
+      "Periodic"
+    ],
+
+    "yvals": [
+      30,
+      20,
+      15
+    ],
+
+    "type": "Bar"
+  
+
+}
