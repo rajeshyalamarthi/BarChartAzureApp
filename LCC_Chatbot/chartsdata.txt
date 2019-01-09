@@ -1,0 +1,276 @@
+using System;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+using System.Windows.Forms.DataVisualization.Charting;
+using System.Drawing;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.WebJobs.Host;
+using Newtonsoft.Json;
+using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
+using System.Collections;
+
+namespace ChartsAndGraphsTestingAzureFunction
+{
+    public static class Function1
+    {
+        static List<double> SortedList = new List<double>();
+        static List<double> list;
+       static ChartData Chartdata = new ChartData();
+
+       [FunctionName("Function1")]
+        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
+        {
+            try
+            {
+                //log.Info("C# HTTP trigger function processed a request.");
+                //var response = await http.GetAsync(" G:/BOT/ChartsAndGraphsTestingAzureFunction/ChartsAndGraphsTestingAzureFunction/Graph.json");
+
+
+                //**********************************************************//
+               // string body = await req.Content.ReadAsStringAsync();
+                //JObject json = JObject.Parse(body);
+                //********************************************************//
+
+
+              string body = File.ReadAllText("G:/BOT/ChartsAndGraphsTestingAzureFunction/ChartsAndGraphsTestingAzureFunction/Image/Graph.json");
+
+                var json = JObject.Parse(body);
+
+                var graphtypeObject = JObject.Parse(body)["xvals"];
+
+
+                //    string[] sasasa = json.Value<string>("xvals");
+
+                //   string exampleee = Convert.ToString(graphtypeObject);
+                //JsonSerializer js = new JsonSerializer();
+                //string[] xarrar = js.Deserialize<ChartData<string,object>>(json);
+
+
+
+                //   string data1 = Convert.ToString(JsonConvert.DeserializeObject<ChartData>(Jdata));
+
+                string graphtype = json["type"].ToString();
+                 Chartdata = JsonConvert.DeserializeObject<ChartData>(body);
+                ArrayList Xvalue = Chartdata.xvals;
+                ArrayList Yvalue = Chartdata.yvals;
+
+                list = new List<double>(Yvalue.Count);
+
+                for (int i = 0; i < Yvalue.Count; i++)
+                {
+                    list.Add(Convert.ToDouble(Yvalue[i]));
+
+                }
+
+                double MaxValue = list.Max();
+                double NoOfDigits = Math.Ceiling(Math.Log10(MaxValue));
+                if (NoOfDigits > 0)
+                {
+
+                    if (NoOfDigits >=4 && NoOfDigits<= 6)
+                    {
+                        SortedList = ConvertedList(NoOfDigits);
+                    }
+                    else if (NoOfDigits >=7 && NoOfDigits<=9)
+                    {
+                        SortedList = ConvertedList(NoOfDigits);
+                    }
+                    else if (NoOfDigits >= 10 && NoOfDigits <=12)
+                    {
+                        SortedList = ConvertedList(NoOfDigits);
+                    }
+                    else if(NoOfDigits>=13 && NoOfDigits <= 15)
+                    {
+                        SortedList = ConvertedList(NoOfDigits);
+                    }
+                    else
+                    {
+                        SortedList = list;
+                    }
+                }
+                else
+                {
+
+                    return null;
+                }
+
+                ArrayList YvalsList = new ArrayList(SortedList);
+
+                if (graphtype.Equals("bar", StringComparison.InvariantCultureIgnoreCase))
+                    {
+
+                    chartCreation(Chartdata.xvals, YvalsList);
+
+                    }
+
+
+
+                //string Xvalues = graphtypeObject["xvals"].ToString();
+                //string[] XvaluesList = Xvalues.Split(',');
+
+
+
+                //if (graphtype.Equals("Bar", StringComparison.InvariantCultureIgnoreCase))
+                //{
+
+                //    chartCreation("");
+                //    var webClient = new WebClient();
+                //    byte[] imageBytes = webClient.DownloadData(@"../../../Image/GraphImageCard.png");
+                //    string url = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+
+
+
+                //}
+
+
+
+
+                //string graphtype = JsonConvert.DeserializeObject<json.>("Type");
+                // channelName = JsonConvert.DeserializeObject<ChannelName>(activity.ChannelData.ToString());
+
+
+
+                //JSONObject jsonObj = new JSONObject();
+
+                //JObject json = JObject.Parse(body);
+                //var obj = Json["json"];
+                //var result = obj.ToObject<string>();
+                //  string channelName = JsonConvert.DeserializeObject<json.>(activity.ChannelData.ToString());
+
+
+
+                //var serializer = new JavaScriptSerializer();
+                //JavaScriptSerializer json_serializer = new JavaScriptSerializer();
+
+                // parse query parameter
+                //var obj = jsonObject["date_joined"];
+                //var result = obj.ToObject<DateTime>();
+
+
+
+                //if (name.Equals("Bar", System.StringComparison.InvariantCultureIgnoreCase))
+                //{
+
+                //    chartCreation("");
+                //    //Activity replyToConversation = activity.CreateReply("This is your Chart");
+                //    //replyToConversation.Recipient = activity.From;
+                //    //replyToConversation.Type = "message";
+                //    //replyToConversation.Attachments = new List<Attachment>();
+
+                //    //replyToConversation.Attachments.Add(new Attachment { ContentUrl = url, ContentType = "image/png" });
+                //    //await connector.Conversations.ReplyToActivityAsync(replyToConversation);
+                //}
+
+                string name = req.GetQueryNameValuePairs()
+               .FirstOrDefault(q => string.Compare(q.Key, "body", true) == 0)
+               .Value;
+
+                if (name == null)
+                {
+                    // Get request body
+                    dynamic data = await req.Content.ReadAsAsync<object>();
+
+                    name = data?.name;
+                }
+
+                return name == null
+                    ? req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or in the request body")
+                    : req.CreateResponse(HttpStatusCode.OK, name);
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+
+        }
+
+
+        public static List<double> ConvertedList(double NoOfDigits)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                if(NoOfDigits>=4 && NoOfDigits <= 6)
+                {
+                    double ConvertedNum = list[i] / 1000;
+                    SortedList.Add(ConvertedNum);
+                }
+                else if (NoOfDigits >=7 && NoOfDigits <=9)
+                {
+                    double ConvertedNum = list[i] / 1000000;
+                    SortedList.Add(ConvertedNum);
+                }
+                else if (NoOfDigits >= 10 && NoOfDigits <= 12)
+                {
+                    double ConvertedNum = list[i] / 1000000000;
+                    SortedList.Add(ConvertedNum);
+                }
+                else if (NoOfDigits >= 13 && NoOfDigits <= 15)
+                {
+                    double ConvertedNum = list[i] / 1000000000000;
+                    SortedList.Add(ConvertedNum);
+                }
+
+            }
+
+            return SortedList;
+        }
+
+
+
+        public static Chart chartCreation(ArrayList xaxislist,ArrayList yaxislist)
+        {
+            try
+            {
+
+                var chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+                chart.Size = new Size(600, 250);
+
+                var chartArea = new ChartArea();
+                // chartArea.AxisX.LabelStyle.Format = "dd/MMM\nhh:mm";
+                chartArea.AxisX.MajorGrid.LineColor = Color.LightGray;
+                chartArea.AxisY.MajorGrid.LineColor = Color.LightGray;
+                
+                chartArea.AxisX.LabelStyle.Font = new Font("Consolas", 60);
+                chartArea.AxisY.LabelStyle.Font = new Font("Consolas", 60);
+                chart.ChartAreas.Add(chartArea);
+                var series = new Series();
+                series.Name = "Series1";
+                //  string path = bingPathToAppDir("G:/BOT/ChartsAndGraphsTestingAzureFunction/ChartsAndGraphsTestingAzureFunction/Image/Graph.json");
+              //  ChartData Chartdata = JsonConvert.DeserializeObject<ChartData>(File.ReadAllText(@"../../../Image/Graph.json"));
+                //ChartData Chartdata = JsonConvert.DeserializeObject<ChartData>(@");
+                series.ChartType = (SeriesChartType)Enum.Parse(typeof(SeriesChartType), Chartdata.type);
+                series.XValueType = ChartValueType.String;
+                chart.Series.Add(series);
+                chart.Series[0].AxisLabel = "axislabel";
+                chart.Series["Series1"].Points.DataBindXY(xaxislist,yaxislist);
+                chart.Invalidate();
+                chart.SaveImage(@"../../../Image/GraphImageCard.png", ChartImageFormat.Png);
+                return chart;
+                // }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        //public static string bingPathToAppDir(string localPath)
+        //{
+        //    string currentDir = Environment.CurrentDirectory;
+        //    DirectoryInfo directory = new DirectoryInfo(
+        //        Path.GetFullPath(Path.Combine(currentDir, @"./" +localPath)));
+        //    return directory.ToString();
+        //}
+    }
+}

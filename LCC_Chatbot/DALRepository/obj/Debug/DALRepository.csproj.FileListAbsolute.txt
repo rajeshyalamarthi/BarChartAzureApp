@@ -1,0 +1,6 @@
+G:\BOT\V3Practice\BotTrainingRepo\LCC_Chatbot\DALRepository\bin\Debug\DALRepository.dll
+G:\BOT\V3Practice\BotTrainingRepo\LCC_Chatbot\DALRepository\bin\Debug\DALRepository.pdb
+G:\BOT\V3Practice\BotTrainingRepo\LCC_Chatbot\DALRepository\obj\Debug\DALRepository.csprojAssemblyReference.cache
+G:\BOT\V3Practice\BotTrainingRepo\LCC_Chatbot\DALRepository\obj\Debug\DALRepository.csproj.CoreCompileInputs.cache
+G:\BOT\V3Practice\BotTrainingRepo\LCC_Chatbot\DALRepository\obj\Debug\DALRepository.dll
+G:\BOT\V3Practice\BotTrainingRepo\LCC_Chatbot\DALRepository\obj\Debug\DALRepository.pdb

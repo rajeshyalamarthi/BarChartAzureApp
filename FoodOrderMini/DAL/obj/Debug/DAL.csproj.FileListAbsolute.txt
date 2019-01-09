@@ -1,0 +1,6 @@
+G:\BOT\V3Practice\BotTrainingRepo\FoodOrderMini\DAL\bin\Debug\DAL.dll
+G:\BOT\V3Practice\BotTrainingRepo\FoodOrderMini\DAL\bin\Debug\DAL.pdb
+G:\BOT\V3Practice\BotTrainingRepo\FoodOrderMini\DAL\obj\Debug\DAL.csprojAssemblyReference.cache
+G:\BOT\V3Practice\BotTrainingRepo\FoodOrderMini\DAL\obj\Debug\DAL.csproj.CoreCompileInputs.cache
+G:\BOT\V3Practice\BotTrainingRepo\FoodOrderMini\DAL\obj\Debug\DAL.dll
+G:\BOT\V3Practice\BotTrainingRepo\FoodOrderMini\DAL\obj\Debug\DAL.pdb
